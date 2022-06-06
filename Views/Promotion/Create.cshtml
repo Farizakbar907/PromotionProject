@@ -1,0 +1,169 @@
+﻿@using ProjectPromotion.Models;
+@model PromotionViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Promotion Page</h2>
+
+<hr />
+<form asp-action="Create" enctype="multipart/form-data" asp-controller="Promotion" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label asp-for="Promotion.IdPromotion" class="control-label"></label>
+            <input asp-for="Promotion.IdPromotion" class="form-control" disabled />
+            <span asp-validation-for="Promotion.IdPromotion" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="Promotion.PromoDescription" class="control-label"></label>
+            <input asp-for="Promotion.PromoDescription" class="form-control" placeholder="1234 dst" />
+            <span asp-validation-for="Promotion.PromoDescription" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="Promotion.PromoType" class="control-label"></label>
+            <select asp-for="Promotion.PromoType" class="form-control">
+                <option>-- Select --</option>
+                <option>Simple Discount</option>
+                <option>Completed Discount</option>
+            </select>
+            <span asp-validation-for="Promotion.PromoType" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="Promotion.PromoDuration" class="control-label"></label>
+            <input asp-for="Promotion.PromoDuration" class="form-control" />
+            <span asp-validation-for="Promotion.PromoDuration" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="Promotion.ValueType" class="control-label"></label>
+            <select id="" class="form-control">
+                <option>-- Select --</option>
+                <option data-id="1">Percentage</option>
+                <option data-id="2">Amount</option>
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputValue">Value</label>
+            <input asp-for="Promotion.ValueType" class="form-control" placeholder="123" />
+            <span asp-validation-for="Promotion.ValueType" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Promotion.Item" class="control-label"></label>
+        <div class="custom-file">
+            <input asp-for="Promotion.Item" class="custom-file-input" id="customFile" />
+            <label class="custom-file-label" for="customFile">Choose File</label>
+        </div>
+        <span asp-validation-for="Promotion.Item" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <table id="tblStore" class="table table-bordered table-hover table-responsive-sm" cellspacing="0">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Store</th>
+                    <th>Store Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Stores stores in Model.StoresViewModel)
+                {
+                    <tr>
+                        <td></td>
+                        <td>@stores.Store</td>
+                        <td>@stores.StoreName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <input type="reset" value="Cancel" class="btn btn-danger" onclick="ResetForm" />
+    </div>
+</form>
+
+
+@*<div>
+        <a asp-action="Index">Back to List</a>
+    </div>*@
+
+<!-- Include Required Prerequisites -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+<link href="~/componenets/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<script src="~/componenets/datatables.net/js/jquery.dataTables.min.js"></script>
+
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<link type="text/css" href="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/css/dataTables.checkboxes.css" rel="stylesheet" />
+<script type="text/javascript" src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
+
+<script type="text/javascript">
+    $('input[name="Promotion.PromoDuration"]').daterangepicker(
+        {
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        },
+
+        $('input[name="Promotion.PromoDuration"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'))
+        }),
+
+        $('input[name="Promotion.PromoDuration"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        }));
+
+    var percent = 100;
+    $('select').change(function () {
+        console.log('value =    ' + $(':selected', $(this)).data('id'));
+
+        if ($(':selected', $(this)).data('id') === 1) {
+
+        }
+    });
+
+    function ResetForm() {
+        $("[asp-for='PromoDescription']").val("");
+        $("[asp-for='PromoType']").val("");
+        $("[asp-for='PromoDuration']").val("");
+        $("[asp-for='ValueType']").val("");
+        $("[asp-for='Item']").val("");
+    }
+
+    $('#tblStore').DataTable({
+        'paging': false,
+        'lengthChange': false,
+        'searching': false,
+        'ordering': true,
+        'info': false,
+        'autoWidth': false,
+        scrollY: '100px',
+        scrollCollapse: true,
+        'columnDefs': [
+            {
+                'targets': 0,
+                'checkboxes': {
+                    'selectRow': true
+                }
+            }
+        ],
+        'select': {
+            'style': 'multi'
+        },
+        'order': [[1, 'asc']]
+    });
+
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
